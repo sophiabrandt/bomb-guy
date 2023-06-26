@@ -4,8 +4,21 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "prettier:write": "prettier --write \"{,!(node_modules)/**/}*.{ts,tsx}\"",
+    "lint:fix": "eslint --fix \"{,!(node_modules)/**/}*.{ts,tsx}\""
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.60.1",
+    "@typescript-eslint/parser": "^5.60.1",
+    "eslint": "^8.43.0",
+    "eslint-config-google": "0.14.0",
+    "prettier": "^2.8.8",
+    "typescript": "5.0.4"
+  },
+  "volta": {
+    "node": "18.16.1"
+  }
 }

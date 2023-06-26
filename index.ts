@@ -32,7 +32,7 @@ enum Input {
 
 let playerx = 1;
 let playery = 1;
-let map: Tile[][] = [
+const map: Tile[][] = [
   [1, 1, 1, 1, 1, 1, 1, 1, 1],
   [1, 0, 0, 2, 2, 2, 2, 2, 1],
   [1, 0, 1, 2, 1, 2, 1, 2, 1],
@@ -44,12 +44,19 @@ let map: Tile[][] = [
   [1, 1, 1, 1, 1, 1, 1, 1, 1],
 ];
 
-let inputs: Input[] = [];
+const inputs: Input[] = [];
 
 let delay = 0;
 let bombs = 1;
 let gameOver = false;
 
+/**
+ * Explodes a bomb on the game map.
+ * @param {number} x - The horizontal position of the bomb.
+ * @param {number} y - The vertical position of the bomb.
+ * @param {Tile} type - The type of the explosion.
+ * @return {void}
+ */
 function explode(x: number, y: number, type: Tile) {
   if (map[y][x] === Tile.STONE) {
     if (Math.random() < 0.1) map[y][x] = Tile.EXTRA_BOMB;
@@ -59,12 +66,20 @@ function explode(x: number, y: number, type: Tile) {
       map[y][x] === Tile.BOMB ||
       map[y][x] === Tile.BOMB_CLOSE ||
       map[y][x] === Tile.BOMB_REALLY_CLOSE
-    )
+    ) {
       bombs++;
+    }
     map[y][x] = type;
   }
 }
 
+/**
+ * Moves the player on the game map.
+ *
+ * @param {number} x - The horizontal distance to move.
+ * @param {number} y - The vertical distance to move.
+ * @return {void}
+ */
 function move(x: number, y: number) {
   if (
     map[playery + y][playerx + x] === Tile.AIR ||
@@ -80,6 +95,10 @@ function move(x: number, y: number) {
   }
 }
 
+/**
+ * Places a bomb on the game map.
+ * @return {void}
+ */
 function placeBomb() {
   if (bombs > 0) {
     map[playery][playerx] = Tile.BOMB;
@@ -87,9 +106,13 @@ function placeBomb() {
   }
 }
 
+/**
+ * Updates the game state.
+ * @return {void}
+ */
 function update() {
   while (!gameOver && inputs.length > 0) {
-    let current = inputs.pop();
+    const current = inputs.pop();
     if (current === Input.LEFT) move(-1, 0);
     else if (current === Input.RIGHT) move(1, 0);
     else if (current === Input.UP) move(0, -1);
@@ -103,8 +126,9 @@ function update() {
     map[playery][playerx] === Tile.MONSTER_UP ||
     map[playery][playerx] === Tile.MONSTER_LEFT ||
     map[playery][playerx] === Tile.MONSTER_RIGHT
-  )
+  ) {
     gameOver = true;
+  }
 
   if (--delay > 0) return;
   delay = DELAY;
@@ -163,48 +187,58 @@ function update() {
   }
 }
 
+/**
+ * Draws the game state.
+ * @return {void}
+ */
 function draw() {
-  let canvas = <HTMLCanvasElement>document.getElementById("GameCanvas");
-  let g = canvas.getContext("2d");
+  const canvas = <HTMLCanvasElement>document.getElementById('GameCanvas');
+  const g = canvas.getContext('2d');
 
   g.clearRect(0, 0, canvas.width, canvas.height);
 
   // Draw map
   for (let y = 0; y < map.length; y++) {
     for (let x = 0; x < map[y].length; x++) {
-      if (map[y][x] === Tile.UNBREAKABLE) g.fillStyle = "#999999";
-      else if (map[y][x] === Tile.STONE) g.fillStyle = "#0000cc";
-      else if (map[y][x] === Tile.EXTRA_BOMB) g.fillStyle = "#00cc00";
-      else if (map[y][x] === Tile.FIRE) g.fillStyle = "#ffcc00";
+      if (map[y][x] === Tile.UNBREAKABLE) g.fillStyle = '#999999';
+      else if (map[y][x] === Tile.STONE) g.fillStyle = '#0000cc';
+      else if (map[y][x] === Tile.EXTRA_BOMB) g.fillStyle = '#00cc00';
+      else if (map[y][x] === Tile.FIRE) g.fillStyle = '#ffcc00';
       else if (
         map[y][x] === Tile.MONSTER_UP ||
         map[y][x] === Tile.MONSTER_LEFT ||
         map[y][x] === Tile.MONSTER_RIGHT ||
         map[y][x] === Tile.MONSTER_DOWN
-      )
-        g.fillStyle = "#cc00cc";
-      else if (map[y][x] === Tile.BOMB) g.fillStyle = "#770000";
-      else if (map[y][x] === Tile.BOMB_CLOSE) g.fillStyle = "#cc0000";
-      else if (map[y][x] === Tile.BOMB_REALLY_CLOSE) g.fillStyle = "#ff0000";
+      ) {
+        g.fillStyle = '#cc00cc';
+      } else if (map[y][x] === Tile.BOMB) g.fillStyle = '#770000';
+      else if (map[y][x] === Tile.BOMB_CLOSE) g.fillStyle = '#cc0000';
+      else if (map[y][x] === Tile.BOMB_REALLY_CLOSE) g.fillStyle = '#ff0000';
 
-      if (map[y][x] !== Tile.AIR)
+      if (map[y][x] !== Tile.AIR) {
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+      }
     }
   }
 
   // Draw player
-  g.fillStyle = "#00ff00";
-  if (!gameOver)
+  g.fillStyle = '#00ff00';
+  if (!gameOver) {
     g.fillRect(playerx * TILE_SIZE, playery * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+  }
 }
 
+/**
+ * The game loop.
+ * @return {void}
+ */
 function gameLoop() {
-  let before = Date.now();
+  const before = Date.now();
   update();
   draw();
-  let after = Date.now();
-  let frameTime = after - before;
-  let sleep = SLEEP - frameTime;
+  const after = Date.now();
+  const frameTime = after - before;
+  const sleep = SLEEP - frameTime;
   setTimeout(() => gameLoop(), sleep);
 }
 
@@ -212,14 +246,14 @@ window.onload = () => {
   gameLoop();
 };
 
-const LEFT_KEY = "ArrowLeft";
-const UP_KEY = "ArrowUp";
-const RIGHT_KEY = "ArrowRight";
-const DOWN_KEY = "ArrowDown";
-window.addEventListener("keydown", (e) => {
-  if (e.key === LEFT_KEY || e.key === "a") inputs.push(Input.LEFT);
-  else if (e.key === UP_KEY || e.key === "w") inputs.push(Input.UP);
-  else if (e.key === RIGHT_KEY || e.key === "d") inputs.push(Input.RIGHT);
-  else if (e.key === DOWN_KEY || e.key === "s") inputs.push(Input.DOWN);
-  else if (e.key === " ") inputs.push(Input.PLACE);
+const LEFT_KEY = 'ArrowLeft';
+const UP_KEY = 'ArrowUp';
+const RIGHT_KEY = 'ArrowRight';
+const DOWN_KEY = 'ArrowDown';
+window.addEventListener('keydown', (e) => {
+  if (e.key === LEFT_KEY || e.key === 'a') inputs.push(Input.LEFT);
+  else if (e.key === UP_KEY || e.key === 'w') inputs.push(Input.UP);
+  else if (e.key === RIGHT_KEY || e.key === 'd') inputs.push(Input.RIGHT);
+  else if (e.key === DOWN_KEY || e.key === 's') inputs.push(Input.DOWN);
+  else if (e.key === ' ') inputs.push(Input.PLACE);
 });
