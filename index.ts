@@ -188,15 +188,23 @@ function update() {
 }
 
 /**
- * Draws the game state.
- * @return {void}
+ * creates the game graphics (HTML canvas).
+ * @return {CanvasRenderingContext2D} The graphics context.
  */
-function draw() {
+function createGraphics() {
   const canvas = <HTMLCanvasElement>document.getElementById('GameCanvas');
   const g = canvas.getContext('2d');
 
   g.clearRect(0, 0, canvas.width, canvas.height);
+  return g;
+}
 
+/**
+ * Draws the map.
+ * @param {CanvasRenderingContext2D} g - the graphics context.
+ * @return {void}
+ */
+function drawMap(g: CanvasRenderingContext2D) {
   // Draw map
   for (let y = 0; y < map.length; y++) {
     for (let x = 0; x < map[y].length; x++) {
@@ -220,12 +228,29 @@ function draw() {
       }
     }
   }
+}
 
+/**
+ * Draws the player.
+ * @param {CanvasRenderingContext2D} g - the graphics context.
+ * @return {void}
+ */
+function drawPlayer(g: CanvasRenderingContext2D) {
   // Draw player
   g.fillStyle = '#00ff00';
   if (!gameOver) {
     g.fillRect(playerx * TILE_SIZE, playery * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
+}
+
+/**
+ * Draws the game state.
+ * @return {void}
+ */
+function draw() {
+  const g = createGraphics();
+  drawMap(g);
+  drawPlayer(g);
 }
 
 /**
