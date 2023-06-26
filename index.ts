@@ -107,19 +107,10 @@ function placeBomb() {
 }
 
 /**
- * Updates the game state.
+ * Checks if the game is over.
  * @return {void}
  */
-function update() {
-  while (!gameOver && inputs.length > 0) {
-    const current = inputs.pop();
-    if (current === Input.LEFT) move(-1, 0);
-    else if (current === Input.RIGHT) move(1, 0);
-    else if (current === Input.UP) move(0, -1);
-    else if (current === Input.DOWN) move(0, 1);
-    else if (current === Input.PLACE) placeBomb();
-  }
-
+function checkGameOver() {
   if (
     map[playery][playerx] === Tile.FIRE ||
     map[playery][playerx] === Tile.MONSTER_DOWN ||
@@ -129,10 +120,36 @@ function update() {
   ) {
     gameOver = true;
   }
+}
 
+/**
+ * Sets the delay between each game update.
+ * @return {void}
+ */
+function setDelay() {
   if (--delay > 0) return;
   delay = DELAY;
+}
 
+/**
+ * Handles the inputs.
+ */
+function handleInputs() {
+  while (!gameOver && inputs.length > 0) {
+    const current = inputs.pop();
+    if (current === Input.LEFT) move(-1, 0);
+    else if (current === Input.RIGHT) move(1, 0);
+    else if (current === Input.UP) move(0, -1);
+    else if (current === Input.DOWN) move(0, 1);
+    else if (current === Input.PLACE) placeBomb();
+  }
+}
+
+/**
+ * Updates the game map.
+ * @return {void}
+ */
+function updateMap() {
   for (let y = 1; y < map.length; y++) {
     for (let x = 1; x < map[y].length; x++) {
       if (map[y][x] === Tile.BOMB) {
@@ -185,6 +202,17 @@ function update() {
       }
     }
   }
+}
+
+/**
+ * Updates the game state.
+ * @return {void}
+ */
+function update() {
+  handleInputs();
+  checkGameOver();
+  setDelay();
+  updateMap();
 }
 
 /**
