@@ -123,25 +123,84 @@ function checkGameOver() {
 }
 
 /**
- * Sets the delay between each game update.
+ * Handles the input.
+ * @param {Input} current
  * @return {void}
  */
-function setDelay() {
-  if (--delay > 0) return;
-  delay = DELAY;
+function handleInput(
+  current: Input | Input.UP | Input.DOWN | Input.RIGHT | Input.PLACE
+) {
+  if (current === Input.LEFT) move(-1, 0);
+  else if (current === Input.RIGHT) move(1, 0);
+  else if (current === Input.UP) move(0, -1);
+  else if (current === Input.DOWN) move(0, 1);
+  else if (current === Input.PLACE) placeBomb();
 }
 
 /**
  * Handles the inputs.
+ * @return {void}
  */
 function handleInputs() {
   while (!gameOver && inputs.length > 0) {
     const current = inputs.pop();
-    if (current === Input.LEFT) move(-1, 0);
-    else if (current === Input.RIGHT) move(1, 0);
-    else if (current === Input.UP) move(0, -1);
-    else if (current === Input.DOWN) move(0, 1);
-    else if (current === Input.PLACE) placeBomb();
+    handleInput(current);
+  }
+}
+
+/**
+ * Updates the game tile.
+ * @param {number} y - The vertical position of the tile.
+ * @param {number} x - The horizontal position of the tile.
+ */
+function updateTile(y: number, x: number) {
+  if (map[y][x] === Tile.BOMB) {
+    map[y][x] = Tile.BOMB_CLOSE;
+  } else if (map[y][x] === Tile.BOMB_CLOSE) {
+    map[y][x] = Tile.BOMB_REALLY_CLOSE;
+  } else if (map[y][x] === Tile.BOMB_REALLY_CLOSE) {
+    explode(x + 0, y - 1, Tile.FIRE);
+    explode(x + 0, y + 1, Tile.TMP_FIRE);
+    explode(x - 1, y + 0, Tile.FIRE);
+    explode(x + 1, y + 0, Tile.TMP_FIRE);
+    map[y][x] = Tile.FIRE;
+    bombs++;
+  } else if (map[y][x] === Tile.TMP_FIRE) {
+    map[y][x] = Tile.FIRE;
+  } else if (map[y][x] === Tile.FIRE) {
+    map[y][x] = Tile.AIR;
+  } else if (map[y][x] === Tile.TMP_MONSTER_DOWN) {
+    map[y][x] = Tile.MONSTER_DOWN;
+  } else if (map[y][x] === Tile.TMP_MONSTER_RIGHT) {
+    map[y][x] = Tile.MONSTER_RIGHT;
+  } else if (map[y][x] === Tile.MONSTER_RIGHT) {
+    if (map[y][x + 1] === Tile.AIR) {
+      map[y][x] = Tile.AIR;
+      map[y][x + 1] = Tile.TMP_MONSTER_RIGHT;
+    } else {
+      map[y][x] = Tile.MONSTER_DOWN;
+    }
+  } else if (map[y][x] === Tile.MONSTER_DOWN) {
+    if (map[y + 1][x] === Tile.AIR) {
+      map[y][x] = Tile.AIR;
+      map[y + 1][x] = Tile.TMP_MONSTER_DOWN;
+    } else {
+      map[y][x] = Tile.MONSTER_LEFT;
+    }
+  } else if (map[y][x] === Tile.MONSTER_LEFT) {
+    if (map[y][x - 1] === Tile.AIR) {
+      map[y][x] = Tile.AIR;
+      map[y][x - 1] = Tile.MONSTER_LEFT;
+    } else {
+      map[y][x] = Tile.MONSTER_UP;
+    }
+  } else if (map[y][x] === Tile.MONSTER_UP) {
+    if (map[y - 1][x] === Tile.AIR) {
+      map[y][x] = Tile.AIR;
+      map[y - 1][x] = Tile.MONSTER_UP;
+    } else {
+      map[y][x] = Tile.MONSTER_RIGHT;
+    }
   }
 }
 
@@ -150,56 +209,11 @@ function handleInputs() {
  * @return {void}
  */
 function updateMap() {
+  if (--delay > 0) return;
+  delay = DELAY;
   for (let y = 1; y < map.length; y++) {
     for (let x = 1; x < map[y].length; x++) {
-      if (map[y][x] === Tile.BOMB) {
-        map[y][x] = Tile.BOMB_CLOSE;
-      } else if (map[y][x] === Tile.BOMB_CLOSE) {
-        map[y][x] = Tile.BOMB_REALLY_CLOSE;
-      } else if (map[y][x] === Tile.BOMB_REALLY_CLOSE) {
-        explode(x + 0, y - 1, Tile.FIRE);
-        explode(x + 0, y + 1, Tile.TMP_FIRE);
-        explode(x - 1, y + 0, Tile.FIRE);
-        explode(x + 1, y + 0, Tile.TMP_FIRE);
-        map[y][x] = Tile.FIRE;
-        bombs++;
-      } else if (map[y][x] === Tile.TMP_FIRE) {
-        map[y][x] = Tile.FIRE;
-      } else if (map[y][x] === Tile.FIRE) {
-        map[y][x] = Tile.AIR;
-      } else if (map[y][x] === Tile.TMP_MONSTER_DOWN) {
-        map[y][x] = Tile.MONSTER_DOWN;
-      } else if (map[y][x] === Tile.TMP_MONSTER_RIGHT) {
-        map[y][x] = Tile.MONSTER_RIGHT;
-      } else if (map[y][x] === Tile.MONSTER_RIGHT) {
-        if (map[y][x + 1] === Tile.AIR) {
-          map[y][x] = Tile.AIR;
-          map[y][x + 1] = Tile.TMP_MONSTER_RIGHT;
-        } else {
-          map[y][x] = Tile.MONSTER_DOWN;
-        }
-      } else if (map[y][x] === Tile.MONSTER_DOWN) {
-        if (map[y + 1][x] === Tile.AIR) {
-          map[y][x] = Tile.AIR;
-          map[y + 1][x] = Tile.TMP_MONSTER_DOWN;
-        } else {
-          map[y][x] = Tile.MONSTER_LEFT;
-        }
-      } else if (map[y][x] === Tile.MONSTER_LEFT) {
-        if (map[y][x - 1] === Tile.AIR) {
-          map[y][x] = Tile.AIR;
-          map[y][x - 1] = Tile.MONSTER_LEFT;
-        } else {
-          map[y][x] = Tile.MONSTER_UP;
-        }
-      } else if (map[y][x] === Tile.MONSTER_UP) {
-        if (map[y - 1][x] === Tile.AIR) {
-          map[y][x] = Tile.AIR;
-          map[y - 1][x] = Tile.MONSTER_UP;
-        } else {
-          map[y][x] = Tile.MONSTER_RIGHT;
-        }
-      }
+      updateTile(y, x);
     }
   }
 }
@@ -211,7 +225,6 @@ function updateMap() {
 function update() {
   handleInputs();
   checkGameOver();
-  setDelay();
   updateMap();
 }
 
