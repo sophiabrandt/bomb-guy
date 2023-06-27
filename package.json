@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "prettier:write": "prettier --write \"{,!(node_modules)/**/}*.{ts,tsx}\"",
-    "lint:fix": "eslint --fix \"{,!(node_modules)/**/}*.{ts,tsx}\""
+    "lint:fix": "eslint --fix \"{,!(node_modules)/**/}*.{ts,tsx}\"",
+    "start": "tsc && open index.html"
   },
   "author": "",
   "license": "ISC",
