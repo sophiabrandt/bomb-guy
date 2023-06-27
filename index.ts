@@ -32,6 +32,8 @@ interface Input {
   isDown(): boolean;
 
   isPlaceBomb(): boolean;
+
+  handle(): void;
 }
 
 /* eslint-disable require-jsdoc */
@@ -58,6 +60,10 @@ class Left implements Input {
   isPlaceBomb() {
     return false;
   }
+
+  handle(): void {
+    move(-1, 0);
+  }
 }
 
 /**
@@ -82,6 +88,10 @@ class Right implements Input {
 
   isPlaceBomb() {
     return false;
+  }
+
+  handle(): void {
+    move(1, 0);
   }
 }
 
@@ -108,6 +118,10 @@ class Up implements Input {
   isPlaceBomb() {
     return false;
   }
+
+  handle(): void {
+    move(0, -1);
+  }
 }
 
 /**
@@ -132,6 +146,10 @@ class Down implements Input {
 
   isPlaceBomb() {
     return false;
+  }
+
+  handle(): void {
+    move(0, 1);
   }
 }
 
@@ -158,12 +176,16 @@ class PlaceBomb implements Input {
   isPlaceBomb() {
     return true;
   }
+
+  handle(): void {
+    placeBomb();
+  }
 }
 
 /* eslint-enable require-jsdoc */
 
-let playerx = 1;
-let playery = 1;
+let playerX = 1;
+let playerY = 1;
 const map: Tile[][] = [
   [1, 1, 1, 1, 1, 1, 1, 1, 1],
   [1, 0, 0, 2, 2, 2, 2, 2, 1],
@@ -214,16 +236,16 @@ function explode(x: number, y: number, type: Tile) {
  */
 function move(x: number, y: number) {
   if (
-    map[playery + y][playerx + x] === Tile.AIR ||
-    map[playery + y][playerx + x] === Tile.FIRE
+    map[playerY + y][playerX + x] === Tile.AIR ||
+    map[playerY + y][playerX + x] === Tile.FIRE
   ) {
-    playery += y;
-    playerx += x;
-  } else if (map[playery + y][playerx + x] === Tile.EXTRA_BOMB) {
-    playery += y;
-    playerx += x;
+    playerY += y;
+    playerX += x;
+  } else if (map[playerY + y][playerX + x] === Tile.EXTRA_BOMB) {
+    playerY += y;
+    playerX += x;
     bombs++;
-    map[playery][playerx] = Tile.AIR;
+    map[playerY][playerX] = Tile.AIR;
   }
 }
 
@@ -233,7 +255,7 @@ function move(x: number, y: number) {
  */
 function placeBomb() {
   if (bombs > 0) {
-    map[playery][playerx] = Tile.BOMB;
+    map[playerY][playerX] = Tile.BOMB;
     bombs--;
   }
 }
@@ -244,27 +266,14 @@ function placeBomb() {
  */
 function checkGameOver() {
   if (
-    map[playery][playerx] === Tile.FIRE ||
-    map[playery][playerx] === Tile.MONSTER_DOWN ||
-    map[playery][playerx] === Tile.MONSTER_UP ||
-    map[playery][playerx] === Tile.MONSTER_LEFT ||
-    map[playery][playerx] === Tile.MONSTER_RIGHT
+    map[playerY][playerX] === Tile.FIRE ||
+    map[playerY][playerX] === Tile.MONSTER_DOWN ||
+    map[playerY][playerX] === Tile.MONSTER_UP ||
+    map[playerY][playerX] === Tile.MONSTER_LEFT ||
+    map[playerY][playerX] === Tile.MONSTER_RIGHT
   ) {
     gameOver = true;
   }
-}
-
-/**
- * Handles the input.
- * @param {Input} input
- * @return {void}
- */
-function handleInput(input: Input) {
-  if (input.isLeft()) move(-1, 0);
-  else if (input.isRight()) move(1, 0);
-  else if (input.isUp()) move(0, -1);
-  else if (input.isDown()) move(0, 1);
-  else if (input.isPlaceBomb()) placeBomb();
 }
 
 /**
@@ -273,8 +282,8 @@ function handleInput(input: Input) {
  */
 function handleInputs() {
   while (!gameOver && inputs.length > 0) {
-    const current = inputs.pop();
-    handleInput(current);
+    const input = inputs.pop();
+    input.handle();
   }
 }
 
@@ -289,10 +298,10 @@ function updateTile(y: number, x: number) {
   } else if (map[y][x] === Tile.BOMB_CLOSE) {
     map[y][x] = Tile.BOMB_REALLY_CLOSE;
   } else if (map[y][x] === Tile.BOMB_REALLY_CLOSE) {
-    explode(x + 0, y - 1, Tile.FIRE);
-    explode(x + 0, y + 1, Tile.TMP_FIRE);
-    explode(x - 1, y + 0, Tile.FIRE);
-    explode(x + 1, y + 0, Tile.TMP_FIRE);
+    explode(x, y - 1, Tile.FIRE);
+    explode(x, y + 1, Tile.TMP_FIRE);
+    explode(x - 1, y, Tile.FIRE);
+    explode(x + 1, y, Tile.TMP_FIRE);
     map[y][x] = Tile.FIRE;
     bombs++;
   } else if (map[y][x] === Tile.TMP_FIRE) {
@@ -410,7 +419,7 @@ function drawPlayer(g: CanvasRenderingContext2D) {
   // Draw player
   g.fillStyle = '#00ff00';
   if (!gameOver) {
-    g.fillRect(playerx * TILE_SIZE, playery * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+    g.fillRect(playerX * TILE_SIZE, playerY * TILE_SIZE, TILE_SIZE, TILE_SIZE);
   }
 }
 
