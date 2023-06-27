@@ -22,13 +22,145 @@ enum Tile {
   MONSTER_LEFT,
 }
 
-enum Input {
-  UP,
-  DOWN,
-  LEFT,
-  RIGHT,
-  PLACE,
+interface Input {
+  isRight(): boolean;
+
+  isLeft(): boolean;
+
+  isUp(): boolean;
+
+  isDown(): boolean;
+
+  isPlaceBomb(): boolean;
 }
+
+/* eslint-disable require-jsdoc */
+/**
+ * Represents a left input.
+ */
+class Left implements Input {
+  isRight() {
+    return false;
+  }
+
+  isLeft() {
+    return true;
+  }
+
+  isUp() {
+    return false;
+  }
+
+  isDown() {
+    return false;
+  }
+
+  isPlaceBomb() {
+    return false;
+  }
+}
+
+/**
+ * Represents a right input.
+ */
+class Right implements Input {
+  isRight() {
+    return true;
+  }
+
+  isLeft() {
+    return false;
+  }
+
+  isUp() {
+    return false;
+  }
+
+  isDown() {
+    return false;
+  }
+
+  isPlaceBomb() {
+    return false;
+  }
+}
+
+/**
+ * Represents an up input.
+ */
+class Up implements Input {
+  isRight() {
+    return false;
+  }
+
+  isLeft() {
+    return false;
+  }
+
+  isUp() {
+    return true;
+  }
+
+  isDown() {
+    return false;
+  }
+
+  isPlaceBomb() {
+    return false;
+  }
+}
+
+/**
+ * Represents a down input.
+ */
+class Down implements Input {
+  isRight() {
+    return false;
+  }
+
+  isLeft() {
+    return false;
+  }
+
+  isUp() {
+    return false;
+  }
+
+  isDown() {
+    return true;
+  }
+
+  isPlaceBomb() {
+    return false;
+  }
+}
+
+/**
+ * Represents placing a bomb via input.
+ */
+class PlaceBomb implements Input {
+  isRight() {
+    return false;
+  }
+
+  isLeft() {
+    return false;
+  }
+
+  isUp() {
+    return false;
+  }
+
+  isDown() {
+    return false;
+  }
+
+  isPlaceBomb() {
+    return true;
+  }
+}
+
+/* eslint-enable require-jsdoc */
 
 let playerx = 1;
 let playery = 1;
@@ -124,17 +256,15 @@ function checkGameOver() {
 
 /**
  * Handles the input.
- * @param {Input} current
+ * @param {Input} input
  * @return {void}
  */
-function handleInput(
-  current: Input | Input.UP | Input.DOWN | Input.RIGHT | Input.PLACE
-) {
-  if (current === Input.LEFT) move(-1, 0);
-  else if (current === Input.RIGHT) move(1, 0);
-  else if (current === Input.UP) move(0, -1);
-  else if (current === Input.DOWN) move(0, 1);
-  else if (current === Input.PLACE) placeBomb();
+function handleInput(input: Input) {
+  if (input.isLeft()) move(-1, 0);
+  else if (input.isRight()) move(1, 0);
+  else if (input.isUp()) move(0, -1);
+  else if (input.isDown()) move(0, 1);
+  else if (input.isPlaceBomb()) placeBomb();
 }
 
 /**
@@ -317,9 +447,9 @@ const UP_KEY = 'ArrowUp';
 const RIGHT_KEY = 'ArrowRight';
 const DOWN_KEY = 'ArrowDown';
 window.addEventListener('keydown', (e) => {
-  if (e.key === LEFT_KEY || e.key === 'a') inputs.push(Input.LEFT);
-  else if (e.key === UP_KEY || e.key === 'w') inputs.push(Input.UP);
-  else if (e.key === RIGHT_KEY || e.key === 'd') inputs.push(Input.RIGHT);
-  else if (e.key === DOWN_KEY || e.key === 's') inputs.push(Input.DOWN);
-  else if (e.key === ' ') inputs.push(Input.PLACE);
+  if (e.key === LEFT_KEY || e.key === 'a') inputs.push(new Left());
+  else if (e.key === UP_KEY || e.key === 'w') inputs.push(new Up());
+  else if (e.key === RIGHT_KEY || e.key === 'd') inputs.push(new Right());
+  else if (e.key === DOWN_KEY || e.key === 's') inputs.push(new Down());
+  else if (e.key === ' ') inputs.push(new PlaceBomb());
 });
