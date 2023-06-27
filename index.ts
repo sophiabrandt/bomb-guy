@@ -4,7 +4,7 @@ const SLEEP = 1000 / FPS;
 const TPS = 2;
 const DELAY = FPS / TPS;
 
-enum Tile {
+enum TileEnum {
   AIR,
   UNBREAKABLE,
   STONE,
@@ -22,6 +22,769 @@ enum Tile {
   MONSTER_LEFT,
 }
 
+/* eslint-disable require-jsdoc */
+/**
+ * Represents a tile.
+ */
+interface Tile {
+  isAir(): boolean;
+
+  isUnbreakable(): boolean;
+
+  isStone(): boolean;
+
+  isBomb(): boolean;
+
+  isBombClose(): boolean;
+
+  isBombReallyClose(): boolean;
+
+  isTmpFire(): boolean;
+
+  isFire(): boolean;
+
+  isExtraBomb(): boolean;
+
+  isMonsterUp(): boolean;
+
+  isMonsterRight(): boolean;
+
+  isTmpMonsterRight(): boolean;
+
+  isMonsterDown(): boolean;
+
+  isMonsterLeft(): boolean;
+}
+
+/**
+ * Represents an air tile.
+ */
+class AirTile implements Tile {
+  isAir(): boolean {
+    return true;
+  }
+
+  isUnbreakable(): boolean {
+    return false;
+  }
+
+  isStone(): boolean {
+    return false;
+  }
+
+  isBomb(): boolean {
+    return false;
+  }
+
+  isBombClose(): boolean {
+    return false;
+  }
+
+  isBombReallyClose(): boolean {
+    return false;
+  }
+
+  isTmpFire(): boolean {
+    return false;
+  }
+
+  isFire(): boolean {
+    return false;
+  }
+
+  isExtraBomb(): boolean {
+    return false;
+  }
+
+  isMonsterUp(): boolean {
+    return false;
+  }
+
+  isMonsterRight(): boolean {
+    return false;
+  }
+
+  isTmpMonsterRight(): boolean {
+    return false;
+  }
+
+  isMonsterDown(): boolean {
+    return false;
+  }
+
+  isMonsterLeft(): boolean {
+    return false;
+  }
+}
+
+/**
+ * Represents an unbreakable tile.
+ */
+class UnbreakableTile implements Tile {
+  isAir(): boolean {
+    return false;
+  }
+
+  isUnbreakable(): boolean {
+    return true;
+  }
+
+  isStone(): boolean {
+    return false;
+  }
+
+  isBomb(): boolean {
+    return false;
+  }
+
+  isBombClose(): boolean {
+    return false;
+  }
+
+  isBombReallyClose(): boolean {
+    return false;
+  }
+
+  isTmpFire(): boolean {
+    return false;
+  }
+
+  isFire(): boolean {
+    return false;
+  }
+
+  isExtraBomb(): boolean {
+    return false;
+  }
+
+  isMonsterUp(): boolean {
+    return false;
+  }
+
+  isMonsterRight(): boolean {
+    return false;
+  }
+
+  isTmpMonsterRight(): boolean {
+    return false;
+  }
+
+  isMonsterDown(): boolean {
+    return false;
+  }
+
+  isMonsterLeft(): boolean {
+    return false;
+  }
+}
+
+/*
+ * Represents a stone tile.
+ */
+class StoneTile implements Tile {
+  isAir(): boolean {
+    return false;
+  }
+
+  isUnbreakable(): boolean {
+    return false;
+  }
+
+  isStone(): boolean {
+    return true;
+  }
+
+  isBomb(): boolean {
+    return false;
+  }
+
+  isBombClose(): boolean {
+    return false;
+  }
+
+  isBombReallyClose(): boolean {
+    return false;
+  }
+
+  isTmpFire(): boolean {
+    return false;
+  }
+
+  isFire(): boolean {
+    return false;
+  }
+
+  isExtraBomb(): boolean {
+    return false;
+  }
+
+  isMonsterUp(): boolean {
+    return false;
+  }
+
+  isMonsterRight(): boolean {
+    return false;
+  }
+
+  isTmpMonsterRight(): boolean {
+    return false;
+  }
+
+  isMonsterDown(): boolean {
+    return false;
+  }
+
+  isMonsterLeft(): boolean {
+    return false;
+  }
+}
+
+class BombTile implements Tile {
+  isAir(): boolean {
+    return false;
+  }
+
+  isUnbreakable(): boolean {
+    return false;
+  }
+
+  isStone(): boolean {
+    return false;
+  }
+
+  isBomb(): boolean {
+    return true;
+  }
+
+  isBombClose(): boolean {
+    return false;
+  }
+
+  isBombReallyClose(): boolean {
+    return false;
+  }
+
+  isTmpFire(): boolean {
+    return false;
+  }
+
+  isFire(): boolean {
+    return false;
+  }
+
+  isExtraBomb(): boolean {
+    return false;
+  }
+
+  isMonsterUp(): boolean {
+    return false;
+  }
+
+  isMonsterRight(): boolean {
+    return false;
+  }
+
+  isTmpMonsterRight(): boolean {
+    return false;
+  }
+
+  isMonsterDown(): boolean {
+    return false;
+  }
+
+  isMonsterLeft(): boolean {
+    return false;
+  }
+}
+
+/**
+ * Represents an extra bomb tile.
+ */
+class ExtraBombTile implements Tile {
+  isAir(): boolean {
+    return false;
+  }
+
+  isBomb(): boolean {
+    return false;
+  }
+
+  isBombClose(): boolean {
+    return false;
+  }
+
+  isBombReallyClose(): boolean {
+    return false;
+  }
+
+  isExtraBomb(): boolean {
+    return true;
+  }
+
+  isFire(): boolean {
+    return false;
+  }
+
+  isMonsterDown(): boolean {
+    return false;
+  }
+
+  isMonsterLeft(): boolean {
+    return false;
+  }
+
+  isMonsterRight(): boolean {
+    return false;
+  }
+
+  isMonsterUp(): boolean {
+    return false;
+  }
+
+  isStone(): boolean {
+    return false;
+  }
+
+  isTmpFire(): boolean {
+    return false;
+  }
+
+  isTmpMonsterRight(): boolean {
+    return false;
+  }
+
+  isUnbreakable(): boolean {
+    return false;
+  }
+}
+
+/**
+ * Represents a fire tile.
+ */
+class FireTile implements Tile {
+  isAir(): boolean {
+    return false;
+  }
+
+  isBomb(): boolean {
+    return false;
+  }
+
+  isBombClose(): boolean {
+    return false;
+  }
+
+  isBombReallyClose(): boolean {
+    return false;
+  }
+
+  isExtraBomb(): boolean {
+    return false;
+  }
+
+  isFire(): boolean {
+    return true;
+  }
+
+  isMonsterDown(): boolean {
+    return false;
+  }
+
+  isMonsterLeft(): boolean {
+    return false;
+  }
+
+  isMonsterRight(): boolean {
+    return false;
+  }
+
+  isMonsterUp(): boolean {
+    return false;
+  }
+
+  isStone(): boolean {
+    return false;
+  }
+
+  isTmpFire(): boolean {
+    return false;
+  }
+
+  isTmpMonsterRight(): boolean {
+    return false;
+  }
+
+  isUnbreakable(): boolean {
+    return false;
+  }
+}
+
+/**
+ * Represents a temporary fire tile.
+ */
+class TmpFireTile implements Tile {
+  isAir(): boolean {
+    return false;
+  }
+
+  isBomb(): boolean {
+    return false;
+  }
+
+  isBombClose(): boolean {
+    return false;
+  }
+
+  isBombReallyClose(): boolean {
+    return false;
+  }
+
+  isExtraBomb(): boolean {
+    return false;
+  }
+
+  isFire(): boolean {
+    return false;
+  }
+
+  isMonsterDown(): boolean {
+    return false;
+  }
+
+  isMonsterLeft(): boolean {
+    return false;
+  }
+
+  isMonsterRight(): boolean {
+    return false;
+  }
+
+  isMonsterUp(): boolean {
+    return false;
+  }
+
+  isStone(): boolean {
+    return false;
+  }
+
+  isTmpFire(): boolean {
+    return true;
+  }
+
+  isTmpMonsterRight(): boolean {
+    return false;
+  }
+
+  isUnbreakable(): boolean {
+    return false;
+  }
+}
+
+/**
+ * Represents a Monster DOWN tile.
+ */
+class MonsterDownTile implements Tile {
+  isAir(): boolean {
+    return false;
+  }
+
+  isBomb(): boolean {
+    return false;
+  }
+
+  isBombClose(): boolean {
+    return false;
+  }
+
+  isBombReallyClose(): boolean {
+    return false;
+  }
+
+  isExtraBomb(): boolean {
+    return false;
+  }
+
+  isFire(): boolean {
+    return false;
+  }
+
+  isMonsterDown(): boolean {
+    return true;
+  }
+
+  isMonsterLeft(): boolean {
+    return false;
+  }
+
+  isMonsterRight(): boolean {
+    return false;
+  }
+
+  isMonsterUp(): boolean {
+    return false;
+  }
+
+  isStone(): boolean {
+    return false;
+  }
+
+  isTmpFire(): boolean {
+    return false;
+  }
+
+  isTmpMonsterRight(): boolean {
+    return false;
+  }
+
+  isUnbreakable(): boolean {
+    return false;
+  }
+}
+
+/**
+ * Represents a Monster LEFT tile.
+ */
+class MonsterLeftTile implements Tile {
+  isAir(): boolean {
+    return false;
+  }
+
+  isBomb(): boolean {
+    return false;
+  }
+
+  isBombClose(): boolean {
+    return false;
+  }
+
+  isBombReallyClose(): boolean {
+    return false;
+  }
+
+  isExtraBomb(): boolean {
+    return false;
+  }
+
+  isFire(): boolean {
+    return false;
+  }
+
+  isMonsterDown(): boolean {
+    return false;
+  }
+
+  isMonsterLeft(): boolean {
+    return true;
+  }
+
+  isMonsterRight(): boolean {
+    return false;
+  }
+
+  isMonsterUp(): boolean {
+    return false;
+  }
+
+  isStone(): boolean {
+    return false;
+  }
+
+  isTmpFire(): boolean {
+    return false;
+  }
+
+  isTmpMonsterRight(): boolean {
+    return false;
+  }
+
+  isUnbreakable(): boolean {
+    return false;
+  }
+}
+
+/**
+ * Represents a Monster RIGHT tile.
+ */
+class MonsterRightTile implements Tile {
+  isAir(): boolean {
+    return false;
+  }
+
+  isBomb(): boolean {
+    return false;
+  }
+
+  isBombClose(): boolean {
+    return false;
+  }
+
+  isBombReallyClose(): boolean {
+    return false;
+  }
+
+  isExtraBomb(): boolean {
+    return false;
+  }
+
+  isFire(): boolean {
+    return false;
+  }
+
+  isMonsterDown(): boolean {
+    return false;
+  }
+
+  isMonsterLeft(): boolean {
+    return false;
+  }
+
+  isMonsterRight(): boolean {
+    return true;
+  }
+
+  isMonsterUp(): boolean {
+    return false;
+  }
+
+  isStone(): boolean {
+    return false;
+  }
+
+  isTmpFire(): boolean {
+    return false;
+  }
+
+  isTmpMonsterRight(): boolean {
+    return false;
+  }
+
+  isUnbreakable(): boolean {
+    return false;
+  }
+}
+
+/**
+ * Represents a Monster UP tile.
+ */
+class MonsterUpTile implements Tile {
+  isAir(): boolean {
+    return false;
+  }
+
+  isBomb(): boolean {
+    return false;
+  }
+
+  isBombClose(): boolean {
+    return false;
+  }
+
+  isBombReallyClose(): boolean {
+    return false;
+  }
+
+  isExtraBomb(): boolean {
+    return false;
+  }
+
+  isFire(): boolean {
+    return false;
+  }
+
+  isMonsterDown(): boolean {
+    return false;
+  }
+
+  isMonsterLeft(): boolean {
+    return false;
+  }
+
+  isMonsterRight(): boolean {
+    return false;
+  }
+
+  isMonsterUp(): boolean {
+    return true;
+  }
+
+  isStone(): boolean {
+    return false;
+  }
+
+  isTmpFire(): boolean {
+    return false;
+  }
+
+  isTmpMonsterRight(): boolean {
+    return false;
+  }
+
+  isUnbreakable(): boolean {
+    return false;
+  }
+}
+
+/**
+ * Represents a temporary monster RIGHT tile.
+ */
+class TmpMonsterRightTile implements Tile {
+  isAir(): boolean {
+    return false;
+  }
+
+  isBomb(): boolean {
+    return false;
+  }
+
+  isBombClose(): boolean {
+    return false;
+  }
+
+  isBombReallyClose(): boolean {
+    return false;
+  }
+
+  isExtraBomb(): boolean {
+    return false;
+  }
+
+  isFire(): boolean {
+    return false;
+  }
+
+  isMonsterDown(): boolean {
+    return false;
+  }
+
+  isMonsterLeft(): boolean {
+    return false;
+  }
+
+  isMonsterRight(): boolean {
+    return false;
+  }
+
+  isMonsterUp(): boolean {
+    return false;
+  }
+
+  isStone(): boolean {
+    return false;
+  }
+
+  isTmpFire(): boolean {
+    return false;
+  }
+
+  isTmpMonsterRight(): boolean {
+    return true;
+  }
+
+  isUnbreakable(): boolean {
+    return false;
+  }
+}
+
 interface Input {
   isRight(): boolean;
 
@@ -36,7 +799,6 @@ interface Input {
   handle(): void;
 }
 
-/* eslint-disable require-jsdoc */
 /**
  * Represents a left input.
  */
@@ -186,7 +948,7 @@ class PlaceBomb implements Input {
 
 let playerX = 1;
 let playerY = 1;
-const map: Tile[][] = [
+const map: TileEnum[][] = [
   [1, 1, 1, 1, 1, 1, 1, 1, 1],
   [1, 0, 0, 2, 2, 2, 2, 2, 1],
   [1, 0, 1, 2, 1, 2, 1, 2, 1],
@@ -208,18 +970,18 @@ let gameOver = false;
  * Explodes a bomb on the game map.
  * @param {number} x - The horizontal position of the bomb.
  * @param {number} y - The vertical position of the bomb.
- * @param {Tile} type - The type of the explosion.
+ * @param {TileEnum} type - The type of the explosion.
  * @return {void}
  */
-function explode(x: number, y: number, type: Tile) {
-  if (map[y][x] === Tile.STONE) {
-    if (Math.random() < 0.1) map[y][x] = Tile.EXTRA_BOMB;
+function explode(x: number, y: number, type: TileEnum) {
+  if (map[y][x] === TileEnum.STONE) {
+    if (Math.random() < 0.1) map[y][x] === TileEnum.EXTRA_BOMB;
     else map[y][x] = type;
-  } else if (map[y][x] !== Tile.UNBREAKABLE) {
+  } else if (map[y][x] !== TileEnum.UNBREAKABLE) {
     if (
-      map[y][x] === Tile.BOMB ||
-      map[y][x] === Tile.BOMB_CLOSE ||
-      map[y][x] === Tile.BOMB_REALLY_CLOSE
+      map[y][x] === TileEnum.BOMB ||
+      map[y][x] === TileEnum.BOMB_CLOSE ||
+      map[y][x] === TileEnum.BOMB_REALLY_CLOSE
     ) {
       bombs++;
     }
@@ -236,16 +998,16 @@ function explode(x: number, y: number, type: Tile) {
  */
 function move(x: number, y: number) {
   if (
-    map[playerY + y][playerX + x] === Tile.AIR ||
-    map[playerY + y][playerX + x] === Tile.FIRE
+    map[playerY + y][playerX + x] === TileEnum.AIR ||
+    map[playerY + y][playerX + x] === TileEnum.FIRE
   ) {
     playerY += y;
     playerX += x;
-  } else if (map[playerY + y][playerX + x] === Tile.EXTRA_BOMB) {
+  } else if (map[playerY + y][playerX + x] === TileEnum.EXTRA_BOMB) {
     playerY += y;
     playerX += x;
     bombs++;
-    map[playerY][playerX] = Tile.AIR;
+    map[playerY][playerX] = TileEnum.AIR;
   }
 }
 
@@ -255,7 +1017,7 @@ function move(x: number, y: number) {
  */
 function placeBomb() {
   if (bombs > 0) {
-    map[playerY][playerX] = Tile.BOMB;
+    map[playerY][playerX] = TileEnum.BOMB;
     bombs--;
   }
 }
@@ -266,11 +1028,11 @@ function placeBomb() {
  */
 function checkGameOver() {
   if (
-    map[playerY][playerX] === Tile.FIRE ||
-    map[playerY][playerX] === Tile.MONSTER_DOWN ||
-    map[playerY][playerX] === Tile.MONSTER_UP ||
-    map[playerY][playerX] === Tile.MONSTER_LEFT ||
-    map[playerY][playerX] === Tile.MONSTER_RIGHT
+    map[playerY][playerX] === TileEnum.FIRE ||
+    map[playerY][playerX] === TileEnum.MONSTER_DOWN ||
+    map[playerY][playerX] === TileEnum.MONSTER_UP ||
+    map[playerY][playerX] === TileEnum.MONSTER_LEFT ||
+    map[playerY][playerX] === TileEnum.MONSTER_RIGHT
   ) {
     gameOver = true;
   }
@@ -293,52 +1055,52 @@ function handleInputs() {
  * @param {number} x - The horizontal position of the tile.
  */
 function updateTile(y: number, x: number) {
-  if (map[y][x] === Tile.BOMB) {
-    map[y][x] = Tile.BOMB_CLOSE;
-  } else if (map[y][x] === Tile.BOMB_CLOSE) {
-    map[y][x] = Tile.BOMB_REALLY_CLOSE;
-  } else if (map[y][x] === Tile.BOMB_REALLY_CLOSE) {
-    explode(x, y - 1, Tile.FIRE);
-    explode(x, y + 1, Tile.TMP_FIRE);
-    explode(x - 1, y, Tile.FIRE);
-    explode(x + 1, y, Tile.TMP_FIRE);
-    map[y][x] = Tile.FIRE;
+  if (map[y][x] === TileEnum.BOMB) {
+    map[y][x] = TileEnum.BOMB_CLOSE;
+  } else if (map[y][x] === TileEnum.BOMB_CLOSE) {
+    map[y][x] = TileEnum.BOMB_REALLY_CLOSE;
+  } else if (map[y][x] === TileEnum.BOMB_REALLY_CLOSE) {
+    explode(x, y - 1, TileEnum.FIRE);
+    explode(x, y + 1, TileEnum.TMP_FIRE);
+    explode(x - 1, y, TileEnum.FIRE);
+    explode(x + 1, y, TileEnum.TMP_FIRE);
+    map[y][x] = TileEnum.FIRE;
     bombs++;
-  } else if (map[y][x] === Tile.TMP_FIRE) {
-    map[y][x] = Tile.FIRE;
-  } else if (map[y][x] === Tile.FIRE) {
-    map[y][x] = Tile.AIR;
-  } else if (map[y][x] === Tile.TMP_MONSTER_DOWN) {
-    map[y][x] = Tile.MONSTER_DOWN;
-  } else if (map[y][x] === Tile.TMP_MONSTER_RIGHT) {
-    map[y][x] = Tile.MONSTER_RIGHT;
-  } else if (map[y][x] === Tile.MONSTER_RIGHT) {
-    if (map[y][x + 1] === Tile.AIR) {
-      map[y][x] = Tile.AIR;
-      map[y][x + 1] = Tile.TMP_MONSTER_RIGHT;
+  } else if (map[y][x] === TileEnum.TMP_FIRE) {
+    map[y][x] = TileEnum.FIRE;
+  } else if (map[y][x] === TileEnum.FIRE) {
+    map[y][x] = TileEnum.AIR;
+  } else if (map[y][x] === TileEnum.TMP_MONSTER_DOWN) {
+    map[y][x] = TileEnum.MONSTER_DOWN;
+  } else if (map[y][x] === TileEnum.TMP_MONSTER_RIGHT) {
+    map[y][x] = TileEnum.MONSTER_RIGHT;
+  } else if (map[y][x] === TileEnum.MONSTER_RIGHT) {
+    if (map[y][x + 1] === TileEnum.AIR) {
+      map[y][x] = TileEnum.AIR;
+      map[y][x + 1] = TileEnum.TMP_MONSTER_RIGHT;
     } else {
-      map[y][x] = Tile.MONSTER_DOWN;
+      map[y][x] = TileEnum.MONSTER_DOWN;
     }
-  } else if (map[y][x] === Tile.MONSTER_DOWN) {
-    if (map[y + 1][x] === Tile.AIR) {
-      map[y][x] = Tile.AIR;
-      map[y + 1][x] = Tile.TMP_MONSTER_DOWN;
+  } else if (map[y][x] === TileEnum.MONSTER_DOWN) {
+    if (map[y + 1][x] === TileEnum.AIR) {
+      map[y][x] = TileEnum.AIR;
+      map[y + 1][x] = TileEnum.TMP_MONSTER_DOWN;
     } else {
-      map[y][x] = Tile.MONSTER_LEFT;
+      map[y][x] = TileEnum.MONSTER_LEFT;
     }
-  } else if (map[y][x] === Tile.MONSTER_LEFT) {
-    if (map[y][x - 1] === Tile.AIR) {
-      map[y][x] = Tile.AIR;
-      map[y][x - 1] = Tile.MONSTER_LEFT;
+  } else if (map[y][x] === TileEnum.MONSTER_LEFT) {
+    if (map[y][x - 1] === TileEnum.AIR) {
+      map[y][x] = TileEnum.AIR;
+      map[y][x - 1] = TileEnum.MONSTER_LEFT;
     } else {
-      map[y][x] = Tile.MONSTER_UP;
+      map[y][x] = TileEnum.MONSTER_UP;
     }
-  } else if (map[y][x] === Tile.MONSTER_UP) {
-    if (map[y - 1][x] === Tile.AIR) {
-      map[y][x] = Tile.AIR;
-      map[y - 1][x] = Tile.MONSTER_UP;
+  } else if (map[y][x] === TileEnum.MONSTER_UP) {
+    if (map[y - 1][x] === TileEnum.AIR) {
+      map[y][x] = TileEnum.AIR;
+      map[y - 1][x] = TileEnum.MONSTER_UP;
     } else {
-      map[y][x] = Tile.MONSTER_RIGHT;
+      map[y][x] = TileEnum.MONSTER_RIGHT;
     }
   }
 }
@@ -368,7 +1130,7 @@ function update() {
 }
 
 /**
- * creates the game graphics (HTML canvas).
+ * Creates the game graphics (HTML canvas).
  * @return {CanvasRenderingContext2D} The graphics context.
  */
 function createGraphics() {
@@ -380,6 +1142,29 @@ function createGraphics() {
 }
 
 /**
+ * Colors a tile with the appropriate color.
+ * @param {number} y
+ * @param {number} x
+ * @param {CanvasRenderingContext2D} g
+ */
+function fillTileWithColor(y: number, x: number, g: CanvasRenderingContext2D) {
+  if (map[y][x].isUnbreakable()) g.fillStyle = '#999999';
+  else if (map[y][x].isStone()) g.fillStyle = '#0000cc';
+  else if (map[y][x].isExtraBomb()) g.fillStyle = '#00cc00';
+  else if (map[y][x].isFire()) g.fillStyle = '#ffcc00';
+  else if (
+    map[y][x].isMonsterUp() ||
+    map[y][x].isMonsterLeft() ||
+    map[y][x].isMonsterRight() ||
+    map[y][x].isMonsterDown()
+  ) {
+    g.fillStyle = '#cc00cc';
+  } else if (map[y][x].isBomb()) g.fillStyle = '#770000';
+  else if (map[y][x].isBombClose()) g.fillStyle = '#cc0000';
+  else if (map[y][x].isBombReallyClose()) g.fillStyle = '#ff0000';
+}
+
+/**
  * Draws the map.
  * @param {CanvasRenderingContext2D} g - the graphics context.
  * @return {void}
@@ -388,22 +1173,9 @@ function drawMap(g: CanvasRenderingContext2D) {
   // Draw map
   for (let y = 0; y < map.length; y++) {
     for (let x = 0; x < map[y].length; x++) {
-      if (map[y][x] === Tile.UNBREAKABLE) g.fillStyle = '#999999';
-      else if (map[y][x] === Tile.STONE) g.fillStyle = '#0000cc';
-      else if (map[y][x] === Tile.EXTRA_BOMB) g.fillStyle = '#00cc00';
-      else if (map[y][x] === Tile.FIRE) g.fillStyle = '#ffcc00';
-      else if (
-        map[y][x] === Tile.MONSTER_UP ||
-        map[y][x] === Tile.MONSTER_LEFT ||
-        map[y][x] === Tile.MONSTER_RIGHT ||
-        map[y][x] === Tile.MONSTER_DOWN
-      ) {
-        g.fillStyle = '#cc00cc';
-      } else if (map[y][x] === Tile.BOMB) g.fillStyle = '#770000';
-      else if (map[y][x] === Tile.BOMB_CLOSE) g.fillStyle = '#cc0000';
-      else if (map[y][x] === Tile.BOMB_REALLY_CLOSE) g.fillStyle = '#ff0000';
+      fillTileWithColor(y, x, g);
 
-      if (map[y][x] !== Tile.AIR) {
+      if (map[y][x] !== TileEnum.AIR) {
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
       }
     }
