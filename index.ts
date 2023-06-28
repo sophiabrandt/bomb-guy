@@ -56,6 +56,8 @@ interface Tile {
   isMonsterDown(): boolean;
 
   isMonsterLeft(): boolean;
+
+  color(g: CanvasRenderingContext2D): void;
 }
 
 /**
@@ -120,6 +122,10 @@ class AirTile implements Tile {
 
   isTmpMonsterDown(): boolean {
     return false;
+  }
+
+  color(): void {
+    return;
   }
 }
 
@@ -186,6 +192,10 @@ class UnbreakableTile implements Tile {
   isTmpMonsterDown(): boolean {
     return false;
   }
+
+  color(g: CanvasRenderingContext2D): void {
+    g.fillStyle = '#999999';
+  }
 }
 
 /*
@@ -250,6 +260,10 @@ class StoneTile implements Tile {
 
   isTmpMonsterDown(): boolean {
     return false;
+  }
+
+  color(g: CanvasRenderingContext2D): void {
+    g.fillStyle = '#0000cc';
   }
 }
 
@@ -316,6 +330,10 @@ class BombTile implements Tile {
   isTmpMonsterDown(): boolean {
     return false;
   }
+
+  color(g: CanvasRenderingContext2D): void {
+    g.fillStyle = '#770000';
+  }
 }
 
 /**
@@ -380,6 +398,10 @@ class BombCloseTile implements Tile {
 
   isTmpMonsterDown(): boolean {
     return false;
+  }
+
+  color(g: CanvasRenderingContext2D): void {
+    g.fillStyle = '#cc0000';
   }
 }
 
@@ -446,6 +468,10 @@ class BombReallyCloseTile implements Tile {
   isTmpMonsterDown(): boolean {
     return false;
   }
+
+  color(g: CanvasRenderingContext2D): void {
+    g.fillStyle = '#ff0000';
+  }
 }
 
 /**
@@ -510,6 +536,10 @@ class ExtraBombTile implements Tile {
 
   isTmpMonsterDown(): boolean {
     return false;
+  }
+
+  color(g: CanvasRenderingContext2D): void {
+    g.fillStyle = '#00cc00';
   }
 }
 
@@ -576,6 +606,10 @@ class FireTile implements Tile {
   isTmpMonsterDown(): boolean {
     return false;
   }
+
+  color(g: CanvasRenderingContext2D): void {
+    g.fillStyle = '#ffcc00';
+  }
 }
 
 /**
@@ -640,6 +674,10 @@ class TmpFireTile implements Tile {
 
   isTmpMonsterDown(): boolean {
     return false;
+  }
+
+  color(): void {
+    return;
   }
 }
 
@@ -706,6 +744,10 @@ class MonsterDownTile implements Tile {
   isTmpMonsterDown(): boolean {
     return false;
   }
+
+  color(g: CanvasRenderingContext2D): void {
+    g.fillStyle = '#cc00cc';
+  }
 }
 
 /**
@@ -770,6 +812,10 @@ class MonsterLeftTile implements Tile {
 
   isTmpMonsterDown(): boolean {
     return false;
+  }
+
+  color(g: CanvasRenderingContext2D) {
+    g.fillStyle = '#cc00cc';
   }
 }
 
@@ -836,6 +882,10 @@ class MonsterRightTile implements Tile {
   isTmpMonsterDown(): boolean {
     return false;
   }
+
+  color(g: CanvasRenderingContext2D): void {
+    g.fillStyle = '#cc00cc';
+  }
 }
 
 /**
@@ -900,6 +950,10 @@ class MonsterUpTile implements Tile {
 
   isTmpMonsterDown(): boolean {
     return false;
+  }
+
+  color(g: CanvasRenderingContext2D): void {
+    g.fillStyle = '#cc00cc';
   }
 }
 
@@ -966,6 +1020,10 @@ class TmpMonsterDownTile implements Tile {
   isTmpMonsterDown(): boolean {
     return true;
   }
+
+  color() {
+    return;
+  }
 }
 
 /**
@@ -1030,6 +1088,10 @@ class TmpMonsterRightTile implements Tile {
 
   isTmpMonsterDown(): boolean {
     return false;
+  }
+
+  color() {
+    return;
   }
 }
 
@@ -1447,29 +1509,6 @@ function createGraphics() {
 }
 
 /**
- * Colors a tile with the appropriate color.
- * @param {number} y
- * @param {number} x
- * @param {CanvasRenderingContext2D} g
- */
-function fillTileWithColor(y: number, x: number, g: CanvasRenderingContext2D) {
-  if (map[y][x].isUnbreakable()) g.fillStyle = '#999999';
-  else if (map[y][x].isStone()) g.fillStyle = '#0000cc';
-  else if (map[y][x].isExtraBomb()) g.fillStyle = '#00cc00';
-  else if (map[y][x].isFire()) g.fillStyle = '#ffcc00';
-  else if (
-    map[y][x].isMonsterUp() ||
-    map[y][x].isMonsterLeft() ||
-    map[y][x].isMonsterRight() ||
-    map[y][x].isMonsterDown()
-  ) {
-    g.fillStyle = '#cc00cc';
-  } else if (map[y][x].isBomb()) g.fillStyle = '#770000';
-  else if (map[y][x].isBombClose()) g.fillStyle = '#cc0000';
-  else if (map[y][x].isBombReallyClose()) g.fillStyle = '#ff0000';
-}
-
-/**
  * Draws the map.
  * @param {CanvasRenderingContext2D} g - the graphics context.
  * @return {void}
@@ -1478,7 +1517,8 @@ function drawMap(g: CanvasRenderingContext2D) {
   // Draw map
   for (let y = 0; y < map.length; y++) {
     for (let x = 0; x < map[y].length; x++) {
-      fillTileWithColor(y, x, g);
+      // fillTileWithColor(y, x, g);
+      map[y][x].color(g);
 
       if (!map[y][x].isAir()) {
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
