@@ -33,6 +33,8 @@ interface Tile {
 
   isStone(): boolean;
 
+  isNormalBomb(): boolean;
+
   isBombHere(): boolean;
 
   isBombClose(): boolean;
@@ -64,6 +66,10 @@ interface Tile {
  * Represents an air tile.
  */
 class AirTile implements Tile {
+  isNormalBomb(): boolean {
+    return false;
+  }
+
   isAir(): boolean {
     return true;
   }
@@ -133,6 +139,10 @@ class AirTile implements Tile {
  * Represents an unbreakable tile.
  */
 class UnbreakableTile implements Tile {
+  isNormalBomb(): boolean {
+    return false;
+  }
+
   isAir(): boolean {
     return false;
   }
@@ -202,6 +212,10 @@ class UnbreakableTile implements Tile {
  * Represents a stone tile.
  */
 class StoneTile implements Tile {
+  isNormalBomb(): boolean {
+    return false;
+  }
+
   isAir(): boolean {
     return false;
   }
@@ -347,6 +361,10 @@ class ReallyClose implements DistanceState {
 class BombTile implements Tile {
   constructor(private distance: DistanceState) {}
 
+  isNormalBomb(): boolean {
+    return true;
+  }
+
   isAir(): boolean {
     return false;
   }
@@ -416,6 +434,9 @@ class BombTile implements Tile {
  * Represents an extra bomb tile.
  */
 class ExtraBombTile implements Tile {
+  isNormalBomb() {
+    return false;
+  }
   isAir(): boolean {
     return false;
   }
@@ -485,6 +506,10 @@ class ExtraBombTile implements Tile {
  * Represents a fire tile.
  */
 class FireTile implements Tile {
+  isNormalBomb(): boolean {
+    return false;
+  }
+
   isAir(): boolean {
     return false;
   }
@@ -554,6 +579,10 @@ class FireTile implements Tile {
  * Represents a temporary fire tile.
  */
 class TmpFireTile implements Tile {
+  isNormalBomb(): boolean {
+    return false;
+  }
+
   isAir(): boolean {
     return false;
   }
@@ -623,6 +652,10 @@ class TmpFireTile implements Tile {
  * Represents a Monster DOWN tile.
  */
 class MonsterDownTile implements Tile {
+  isNormalBomb(): boolean {
+    return false;
+  }
+
   isAir(): boolean {
     return false;
   }
@@ -692,6 +725,10 @@ class MonsterDownTile implements Tile {
  * Represents a Monster LEFT tile.
  */
 class MonsterLeftTile implements Tile {
+  isNormalBomb(): boolean {
+    return false;
+  }
+
   isAir(): boolean {
     return false;
   }
@@ -761,6 +798,10 @@ class MonsterLeftTile implements Tile {
  * Represents a Monster RIGHT tile.
  */
 class MonsterRightTile implements Tile {
+  isNormalBomb(): boolean {
+    return false;
+  }
+
   isAir(): boolean {
     return false;
   }
@@ -830,6 +871,10 @@ class MonsterRightTile implements Tile {
  * Represents a Monster UP tile.
  */
 class MonsterUpTile implements Tile {
+  isNormalBomb(): boolean {
+    return false;
+  }
+
   isAir(): boolean {
     return false;
   }
@@ -899,6 +944,10 @@ class MonsterUpTile implements Tile {
  * Represents a temporary Monster DOWN tile.
  */
 class TmpMonsterDownTile implements Tile {
+  isNormalBomb(): boolean {
+    return false;
+  }
+
   isAir(): boolean {
     return false;
   }
@@ -968,6 +1017,10 @@ class TmpMonsterDownTile implements Tile {
  * Represents a temporary monster RIGHT tile.
  */
 class TmpMonsterRightTile implements Tile {
+  isNormalBomb(): boolean {
+    return false;
+  }
+
   isAir(): boolean {
     return false;
   }
@@ -1278,16 +1331,12 @@ let gameOver = false;
  * @param {Tile} type - The type of the explosion.
  * @return {void}
  */
-function explode(x: number, y: number, type: Tile) {
+function explode(x: number, y: number, type: Tile): void {
   if (map[y][x].isStone()) {
-    if (Math.random() < 0.1) map[y][x].isExtraBomb();
+    if (Math.random() < 0.1) map[y][x] = new ExtraBombTile();
     else map[y][x] = type;
   } else if (!map[y][x].isUnbreakable()) {
-    if (
-      map[y][x].isBombHere() ||
-      map[y][x].isBombClose() ||
-      map[y][x].isBombReallyClose()
-    ) {
+    if (map[y][x].isNormalBomb()) {
       bombs++;
     }
     map[y][x] = type;
@@ -1301,7 +1350,7 @@ function explode(x: number, y: number, type: Tile) {
  * @param {number} y - The vertical distance to move.
  * @return {void}
  */
-function move(x: number, y: number) {
+function move(x: number, y: number): void {
   if (
     map[playerY + y][playerX + x].isAir() ||
     map[playerY + y][playerX + x].isFire()
@@ -1320,7 +1369,7 @@ function move(x: number, y: number) {
  * Places a bomb on the game map.
  * @return {void}
  */
-function placeBomb() {
+function placeBomb(): void {
   if (bombs > 0) {
     map[playerY][playerX] = new BombTile(new Here());
     bombs--;
@@ -1331,7 +1380,7 @@ function placeBomb() {
  * Checks if the game is over.
  * @return {void}
  */
-function checkGameOver() {
+function checkGameOver(): void {
   if (
     map[playerY][playerX].isFire() ||
     map[playerY][playerX].isMonsterDown() ||
@@ -1347,7 +1396,7 @@ function checkGameOver() {
  * Handles the inputs.
  * @return {void}
  */
-function handleInputs() {
+function handleInputs(): void {
   while (!gameOver && inputs.length > 0) {
     const input = inputs.pop();
     input.handle();
@@ -1414,7 +1463,7 @@ function updateTile(y: number, x: number) {
  * Updates the game map.
  * @return {void}
  */
-function updateMap() {
+function updateMap(): void {
   if (--delay > 0) return;
   delay = DELAY;
   for (let y = 1; y < map.length; y++) {
@@ -1428,7 +1477,7 @@ function updateMap() {
  * Updates the game state.
  * @return {void}
  */
-function update() {
+function update(): void {
   handleInputs();
   checkGameOver();
   updateMap();
@@ -1438,7 +1487,7 @@ function update() {
  * Creates the game graphics (HTML canvas).
  * @return {CanvasRenderingContext2D} The graphics context.
  */
-function createGraphics() {
+function createGraphics(): CanvasRenderingContext2D {
   const canvas = <HTMLCanvasElement>document.getElementById('GameCanvas');
   const g = canvas.getContext('2d');
 
@@ -1451,7 +1500,7 @@ function createGraphics() {
  * @param {CanvasRenderingContext2D} g - the graphics context.
  * @return {void}
  */
-function drawMap(g: CanvasRenderingContext2D) {
+function drawMap(g: CanvasRenderingContext2D): void {
   // Draw map
   for (let y = 0; y < map.length; y++) {
     for (let x = 0; x < map[y].length; x++) {
@@ -1469,7 +1518,7 @@ function drawMap(g: CanvasRenderingContext2D) {
  * @param {CanvasRenderingContext2D} g - the graphics context.
  * @return {void}
  */
-function drawPlayer(g: CanvasRenderingContext2D) {
+function drawPlayer(g: CanvasRenderingContext2D): void {
   // Draw player
   g.fillStyle = '#00ff00';
   if (!gameOver) {
@@ -1481,7 +1530,7 @@ function drawPlayer(g: CanvasRenderingContext2D) {
  * Draws the game state.
  * @return {void}
  */
-function draw() {
+function draw(): void {
   const g = createGraphics();
   drawMap(g);
   drawPlayer(g);
@@ -1491,7 +1540,7 @@ function draw() {
  * The game loop.
  * @return {void}
  */
-function gameLoop() {
+function gameLoop(): void {
   const before = Date.now();
   update();
   draw();
