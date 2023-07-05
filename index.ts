@@ -33,7 +33,7 @@ interface Tile {
 
   isStone(): boolean;
 
-  isBomb(): boolean;
+  isBombHere(): boolean;
 
   isBombClose(): boolean;
 
@@ -76,7 +76,7 @@ class AirTile implements Tile {
     return false;
   }
 
-  isBomb(): boolean {
+  isBombHere(): boolean {
     return false;
   }
 
@@ -145,7 +145,7 @@ class UnbreakableTile implements Tile {
     return false;
   }
 
-  isBomb(): boolean {
+  isBombHere(): boolean {
     return false;
   }
 
@@ -214,7 +214,7 @@ class StoneTile implements Tile {
     return true;
   }
 
-  isBomb(): boolean {
+  isBombHere(): boolean {
     return false;
   }
 
@@ -268,66 +268,29 @@ class StoneTile implements Tile {
 }
 
 /**
- * Represents a bomb tile.
+ * Represents the distance.
  */
-class BombTile implements Tile {
-  isAir(): boolean {
-    return false;
-  }
+interface DistanceState {
+  isHere(): boolean;
+  isClose(): boolean;
+  isReallyClose(): boolean;
 
-  isUnbreakable(): boolean {
-    return false;
-  }
+  color(g: CanvasRenderingContext2D): void;
+}
 
-  isStone(): boolean {
-    return false;
-  }
-
-  isBomb(): boolean {
+/**
+ * Represents Here.
+ */
+class Here implements DistanceState {
+  isHere(): boolean {
     return true;
   }
 
-  isBombClose(): boolean {
+  isClose(): boolean {
     return false;
   }
 
-  isBombReallyClose(): boolean {
-    return false;
-  }
-
-  isTmpFire(): boolean {
-    return false;
-  }
-
-  isFire(): boolean {
-    return false;
-  }
-
-  isExtraBomb(): boolean {
-    return false;
-  }
-
-  isMonsterUp(): boolean {
-    return false;
-  }
-
-  isMonsterRight(): boolean {
-    return false;
-  }
-
-  isTmpMonsterRight(): boolean {
-    return false;
-  }
-
-  isMonsterDown(): boolean {
-    return false;
-  }
-
-  isMonsterLeft(): boolean {
-    return false;
-  }
-
-  isTmpMonsterDown(): boolean {
+  isReallyClose(): boolean {
     return false;
   }
 
@@ -337,66 +300,18 @@ class BombTile implements Tile {
 }
 
 /**
- * Represents a close bomb tile.
+ * Represents Close.
  */
-class BombCloseTile implements Tile {
-  isAir(): boolean {
+class Close implements DistanceState {
+  isHere(): boolean {
     return false;
   }
 
-  isBomb(): boolean {
-    return false;
-  }
-
-  isBombClose(): boolean {
+  isClose(): boolean {
     return true;
   }
 
-  isBombReallyClose(): boolean {
-    return false;
-  }
-
-  isExtraBomb(): boolean {
-    return false;
-  }
-
-  isFire(): boolean {
-    return false;
-  }
-
-  isMonsterDown(): boolean {
-    return false;
-  }
-
-  isMonsterLeft(): boolean {
-    return false;
-  }
-
-  isMonsterRight(): boolean {
-    return false;
-  }
-
-  isMonsterUp(): boolean {
-    return false;
-  }
-
-  isStone(): boolean {
-    return false;
-  }
-
-  isTmpFire(): boolean {
-    return false;
-  }
-
-  isTmpMonsterRight(): boolean {
-    return false;
-  }
-
-  isUnbreakable(): boolean {
-    return false;
-  }
-
-  isTmpMonsterDown(): boolean {
+  isReallyClose(): boolean {
     return false;
   }
 
@@ -406,30 +321,77 @@ class BombCloseTile implements Tile {
 }
 
 /**
- * Represents a really close bomb tile.
+ * Represents Really Close.
  */
-class BombReallyCloseTile implements Tile {
+class ReallyClose implements DistanceState {
+  isHere(): boolean {
+    return false;
+  }
+
+  isClose(): boolean {
+    return false;
+  }
+
+  isReallyClose(): boolean {
+    return true;
+  }
+
+  color(g: CanvasRenderingContext2D): void {
+    g.fillStyle = '#ff0000';
+  }
+}
+
+/**
+ * Represents a bomb tile.
+ */
+class BombTile implements Tile {
+  constructor(private distance: DistanceState) {}
+
   isAir(): boolean {
     return false;
   }
 
-  isBomb(): boolean {
+  isUnbreakable(): boolean {
     return false;
+  }
+
+  isStone(): boolean {
+    return false;
+  }
+
+  isBombHere(): boolean {
+    return this.distance.isHere();
   }
 
   isBombClose(): boolean {
-    return false;
+    return this.distance.isClose();
   }
 
   isBombReallyClose(): boolean {
-    return true;
+    return this.distance.isReallyClose();
+  }
+
+  isTmpFire(): boolean {
+    return false;
+  }
+
+  isFire(): boolean {
+    return false;
   }
 
   isExtraBomb(): boolean {
     return false;
   }
 
-  isFire(): boolean {
+  isMonsterUp(): boolean {
+    return false;
+  }
+
+  isMonsterRight(): boolean {
+    return false;
+  }
+
+  isTmpMonsterRight(): boolean {
     return false;
   }
 
@@ -441,36 +403,12 @@ class BombReallyCloseTile implements Tile {
     return false;
   }
 
-  isMonsterRight(): boolean {
-    return false;
-  }
-
-  isMonsterUp(): boolean {
-    return false;
-  }
-
-  isStone(): boolean {
-    return false;
-  }
-
-  isTmpFire(): boolean {
-    return false;
-  }
-
-  isTmpMonsterRight(): boolean {
-    return false;
-  }
-
-  isUnbreakable(): boolean {
-    return false;
-  }
-
   isTmpMonsterDown(): boolean {
     return false;
   }
 
   color(g: CanvasRenderingContext2D): void {
-    g.fillStyle = '#ff0000';
+    this.distance.color(g);
   }
 }
 
@@ -482,7 +420,7 @@ class ExtraBombTile implements Tile {
     return false;
   }
 
-  isBomb(): boolean {
+  isBombHere(): boolean {
     return false;
   }
 
@@ -551,7 +489,7 @@ class FireTile implements Tile {
     return false;
   }
 
-  isBomb(): boolean {
+  isBombHere(): boolean {
     return false;
   }
 
@@ -620,7 +558,7 @@ class TmpFireTile implements Tile {
     return false;
   }
 
-  isBomb(): boolean {
+  isBombHere(): boolean {
     return false;
   }
 
@@ -689,7 +627,7 @@ class MonsterDownTile implements Tile {
     return false;
   }
 
-  isBomb(): boolean {
+  isBombHere(): boolean {
     return false;
   }
 
@@ -758,7 +696,7 @@ class MonsterLeftTile implements Tile {
     return false;
   }
 
-  isBomb(): boolean {
+  isBombHere(): boolean {
     return false;
   }
 
@@ -827,7 +765,7 @@ class MonsterRightTile implements Tile {
     return false;
   }
 
-  isBomb(): boolean {
+  isBombHere(): boolean {
     return false;
   }
 
@@ -896,7 +834,7 @@ class MonsterUpTile implements Tile {
     return false;
   }
 
-  isBomb(): boolean {
+  isBombHere(): boolean {
     return false;
   }
 
@@ -965,7 +903,7 @@ class TmpMonsterDownTile implements Tile {
     return false;
   }
 
-  isBomb(): boolean {
+  isBombHere(): boolean {
     return false;
   }
 
@@ -1034,7 +972,7 @@ class TmpMonsterRightTile implements Tile {
     return false;
   }
 
-  isBomb(): boolean {
+  isBombHere(): boolean {
     return false;
   }
 
@@ -1295,11 +1233,11 @@ function transformTile(tile: RawTile): Tile {
     case RawTile.AIR:
       return new AirTile();
     case RawTile.BOMB:
-      return new BombTile();
+      return new BombTile(new Here());
     case RawTile.BOMB_CLOSE:
-      return new BombCloseTile();
+      return new BombTile(new Close());
     case RawTile.BOMB_REALLY_CLOSE:
-      return new BombReallyCloseTile();
+      return new BombTile(new ReallyClose());
     case RawTile.EXTRA_BOMB:
       return new ExtraBombTile();
     case RawTile.FIRE:
@@ -1346,7 +1284,7 @@ function explode(x: number, y: number, type: Tile) {
     else map[y][x] = type;
   } else if (!map[y][x].isUnbreakable()) {
     if (
-      map[y][x].isBomb() ||
+      map[y][x].isBombHere() ||
       map[y][x].isBombClose() ||
       map[y][x].isBombReallyClose()
     ) {
@@ -1384,7 +1322,7 @@ function move(x: number, y: number) {
  */
 function placeBomb() {
   if (bombs > 0) {
-    map[playerY][playerX] = new BombTile();
+    map[playerY][playerX] = new BombTile(new Here());
     bombs--;
   }
 }
@@ -1422,10 +1360,10 @@ function handleInputs() {
  * @param {number} x - The horizontal position of the tile.
  */
 function updateTile(y: number, x: number) {
-  if (map[y][x].isBomb()) {
-    map[y][x] = new BombCloseTile();
+  if (map[y][x].isBombHere()) {
+    map[y][x] = new BombTile(new Close());
   } else if (map[y][x].isBombClose()) {
-    map[y][x] = new BombReallyCloseTile();
+    map[y][x] = new BombTile(new ReallyClose());
   } else if (map[y][x].isBombReallyClose()) {
     explode(x, y - 1, new FireTile());
     explode(x, y + 1, new TmpFireTile());
@@ -1517,7 +1455,6 @@ function drawMap(g: CanvasRenderingContext2D) {
   // Draw map
   for (let y = 0; y < map.length; y++) {
     for (let x = 0; x < map[y].length; x++) {
-      // fillTileWithColor(y, x, g);
       map[y][x].color(g);
 
       if (!map[y][x].isAir()) {
